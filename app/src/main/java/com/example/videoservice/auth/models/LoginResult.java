@@ -1,4 +1,4 @@
-package com.example.videoservice;
+package com.example.videoservice.auth.models;
 
 import com.google.gson.annotations.SerializedName;
 
