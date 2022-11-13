@@ -25,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private Retrofit retrofit;
     private RetrofitAuthInterface retrofitInterface;
-    private String BASE_URL = "http://10.0.2.2:3000";
+    private String BASE_URL = "http://localhost:8080/auth/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

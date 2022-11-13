@@ -10,9 +10,9 @@ import retrofit2.http.POST;
 
 public interface RetrofitAuthInterface {
 
-    @POST("http://10.0.2.2:3000/login")
+    @POST("login/")
     Call<LoginResult> executeLogin(@Body HashMap<String, String> map);
 
-    @POST("http://10.0.2.2:3000/signup")
+    @POST("signup/")
     Call<Void> executeSignup(@Body HashMap<String, String> map);
 }
