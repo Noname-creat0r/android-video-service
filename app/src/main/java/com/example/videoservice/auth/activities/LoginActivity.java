@@ -39,28 +39,13 @@ public class LoginActivity extends AppCompatActivity {
 
         retrofitInterface = retrofit.create(RetrofitAuthInterface.class);
 
-        findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleLoginDialog();
-            }
-        });
-    }
-    private void handleLoginDialog() {
-
-        View view = getLayoutInflater().inflate(R.layout.login_dialog, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setView(view).show();
-
-        Button loginBtn = view.findViewById(R.id.login);
-        final EditText emailEdit = view.findViewById(R.id.emailEdit);
-        final EditText passwordEdit = view.findViewById(R.id.passwordEdit);
+        Button loginBtn = this.findViewById(R.id.login);
+        final EditText emailEdit = this.findViewById(R.id.emailEdit);
+        final EditText passwordEdit = this.findViewById(R.id.passwordEdit);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 HashMap<String, String> map = new HashMap<>();
 
                 map.put("email", emailEdit.getText().toString());
@@ -76,7 +61,8 @@ public class LoginActivity extends AppCompatActivity {
 
                             LoginResult result = response.body();
 
-                            AlertDialog.Builder builder1 = new AlertDialog.Builder(LoginActivity.this);
+                            AlertDialog.Builder builder1 =
+                                    new AlertDialog.Builder(LoginActivity.this);
                             builder1.setTitle(result.getName());
                             builder1.setMessage(result.getEmail());
 
@@ -95,7 +81,9 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 });
+
             }
         });
     }
+
 }

@@ -42,10 +42,10 @@ public class SignupActivity extends AppCompatActivity {
         final EditText nameEdit = this.findViewById(R.id.nameEdit);
         final EditText emailEdit = this.findViewById(R.id.emailEdit);
         final EditText passwordEdit = this.findViewById(R.id.passwordEdit);
+
         signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 HashMap<String, String> map = new HashMap<>();
 
@@ -54,7 +54,6 @@ public class SignupActivity extends AppCompatActivity {
                 map.put("password", passwordEdit.getText().toString());
 
                 Call<Void> call = retrofitInterface.executeSignup(map);
-
 
                 call.enqueue(new Callback<Void>() {
                     @Override
