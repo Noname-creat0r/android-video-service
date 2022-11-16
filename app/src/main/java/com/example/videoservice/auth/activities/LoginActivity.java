@@ -25,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private Retrofit retrofit;
     private RetrofitAuthInterface retrofitInterface;
-    private final String BASE_URL = String.valueOf(R.string.auth);
+    private final String BASE_URL = "http://10.0.2.2:8080/auth/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,15 +61,16 @@ public class LoginActivity extends AppCompatActivity {
 
                             LoginResult result = response.body();
 
-                            AlertDialog.Builder builder1 =
+                            AlertDialog.Builder builder =
                                     new AlertDialog.Builder(LoginActivity.this);
-                            builder1.setTitle(result.getName());
-                            builder1.setMessage(result.getEmail());
+                            builder.setTitle(result.getName());
+                            builder.setMessage(result.getEmail() +
+                                    " has successfully authenticated.");
 
-                            builder1.show();
+                            builder.show();
 
-                        } else if (response.code() == 404) {
-                            Toast.makeText(LoginActivity.this, "Wrong Credentials",
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Wrong credentials.",
                                     Toast.LENGTH_LONG).show();
                         }
 

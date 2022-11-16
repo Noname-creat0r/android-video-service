@@ -24,7 +24,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private Retrofit retrofit;
     private RetrofitAuthInterface retrofitInterface;
-    private final String BASE_URL = String.valueOf(R.string.auth);
+    private final String BASE_URL = "http://10.0.2.2:8080/auth/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
 
-                        if (response.code() == 200) {
+                        if (response.code() == 201) {
                             Toast.makeText(SignupActivity.this,
                                     "Signed up successfully", Toast.LENGTH_LONG).show();
                         } else if (response.code() == 400) {
