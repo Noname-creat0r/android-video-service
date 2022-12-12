@@ -17,6 +17,11 @@
         android:icon="@drawable/playlist"
         android:title="@string/playlists"
         />
+    <item
+        android:id="@+id/menuProfile"
+        android:icon="@drawable/user_body_menu"
+        android:title="@string/profile"
+        />
 
 
     <item android:title="@string/other">
