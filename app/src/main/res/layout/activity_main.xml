@@ -14,6 +14,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/layoutToolBar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:background="@color/lilacLuster"
@@ -47,6 +48,19 @@
                 android:src="@drawable/user" />
         </LinearLayout>
 
+        <fragment
+            android:id="@+id/navHostFragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/layoutToolBar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/main"
+            />
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -54,6 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@color/platinum"
+        app:menu="@menu/menu_toolbar"
         android:layout_gravity="start"
         />
     

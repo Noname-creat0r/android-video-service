@@ -1,82 +1,73 @@
 package com.example.videoservice.auth.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.videoservice.R;
-import com.example.videoservice.auth.interfaces.RetrofitAuthInterface;
+import com.example.videoservice.auth.Auth;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.HashMap;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 public class SignupActivity extends AppCompatActivity {
 
-    private Retrofit retrofit;
-    private RetrofitAuthInterface retrofitInterface;
-    private final String BASE_URL = "http://10.0.2.2:8080/auth/";
+    public Auth Auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup_dialog);
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        retrofitInterface = retrofit.create(RetrofitAuthInterface.class);
+        //Auth = Auth.getInstance();
 
         Button signupBtn = this.findViewById(R.id.signup);
-        final EditText nameEdit = this.findViewById(R.id.nameEdit);
-        final EditText emailEdit = this.findViewById(R.id.emailEdit);
-        final EditText passwordEdit = this.findViewById(R.id.passwordEdit);
+        EditText emailEdit = this.findViewById(R.id.emailEdit);
+        EditText passwordEdit = this.findViewById(R.id.passwordEdit);
 
         signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                HashMap<String, String> map = new HashMap<>();
-
-                map.put("name", nameEdit.getText().toString());
-                map.put("email", emailEdit.getText().toString());
-                map.put("password", passwordEdit.getText().toString());
-
-                Call<Void> call = retrofitInterface.executeSignup(map);
-
-                call.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-
-                        if (response.code() == 201) {
-                            Toast.makeText(SignupActivity.this,
-                                    "Signed up successfully", Toast.LENGTH_LONG).show();
-                        } else if (response.code() == 400) {
-                            Toast.makeText(SignupActivity.this,
-                                    "Already registered", Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(SignupActivity.this, t.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-
+                signUpUser(emailEdit.getText().toString(),
+                        passwordEdit.getText().toString());
             }
         });
+    }
 
+    private void signUpUser(String email, String password) {
+        // Validation
+
+        Auth.getAuth().createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+                            Log.d("AUTH", "createUserWithEmail:success");
+                            FirebaseUser user = Auth.getAuth().getCurrentUser();
+
+
+                            Toast.makeText(SignupActivity.this, user.getEmail(),
+                                    Toast.LENGTH_SHORT).show();
+
+                            // return user
+                        } else {
+                            Log.d("AUTH", "createUserWithEmail:failed "
+                                    + task.getException());
+                            Toast.makeText(SignupActivity.this, "Authentication failed",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        finish();
+                    }
+                });
     }
 }

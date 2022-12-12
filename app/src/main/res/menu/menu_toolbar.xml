@@ -2,13 +2,35 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/menuHome"
+        android:icon="@drawable/home"
+        android:title="@string/home"
+        />
+
+    <item
         android:id="@+id/menuSettings"
-        android:title="Settings"
+        android:icon="@drawable/setting"
+        android:title="@string/settings"
         />
     <item
-        android:id="@+id/menuAvatar"
-        android:icon="@drawable/user"
-        android:title="User"
-        android:onClick="method createAuthDialog"
-        app:showAsAction="always" />
+        android:id="@+id/menuPlaylists"
+        android:icon="@drawable/playlist"
+        android:title="@string/playlists"
+        />
+
+
+    <item android:title="@string/other">
+        <menu>
+            <item
+                android:id="@+id/menuInfo"
+                android:icon="@drawable/info"
+                android:title="@string/info"
+                />
+            <item
+                android:id="@+id/menuAbout"
+                android:icon="@drawable/more"
+                android:title="@string/about"
+                />
+        </menu>
+    </item>
 </menu>
