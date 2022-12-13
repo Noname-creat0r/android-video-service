@@ -13,7 +13,7 @@
     <fragment
         android:id="@+id/menuUpload"
         android:name="com.example.videoservice.fragments.VideoUploadFragment"
-        android:label="Home"
+        android:label="Upload"
         tools:layout="@layout/fragment_video_upload" />
     <fragment
         android:id="@+id/menuProfile"

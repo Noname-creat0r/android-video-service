@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navigationView);
-        navigationView.setItemIconTintList(null);
 
         NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
         NavigationUI.setupWithNavController(navigationView, navController);

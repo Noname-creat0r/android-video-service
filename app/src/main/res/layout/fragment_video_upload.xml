@@ -3,4 +3,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.VideoUploadFragment"/>
+    tools:context=".fragments.VideoUploadFragment"
+    android:background="@color/platinum">
+
+    <EditText
+        android:id="@+id/editTextPersonName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_gravity="center"
+        android:layout_marginBottom="200dp"
+        android:inputType="textPersonName"
+        android:hint="Video title" />
+
+    <EditText
+        android:id="@+id/editTextVideoDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:gravity="start|top"
+        android:layout_gravity="center"
+        android:layout_marginBottom="100dp"
+        android:hint="video description"
+        android:inputType="textMultiLine" />
+
+    <TextView
+        android:id="@+id/textViewChooseVideo"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:background="@color/gainsboro"
+        android:text="Choose your video..."
+        android:textColor="@color/nickel"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:layout_gravity="center"
+        />
+
+    <Button
+        android:id="@+id/buttonUpload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upload"
+        android:backgroundTint="@color/lilacLuster"
+        android:layout_marginTop="200dp"
+        android:layout_gravity="center" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:visibility="invisible"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/lilacLuster"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="80dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"/>
+
+
+</FrameLayout>

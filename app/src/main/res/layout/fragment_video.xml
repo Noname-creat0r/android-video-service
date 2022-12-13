@@ -17,6 +17,7 @@
 
         <TextView
             android:id="@+id/videTitle"
+            android:textSize="18sp"
             android:layout_width="match_parent"
             android:layout_height="27dp"
             android:text="TextView" />
