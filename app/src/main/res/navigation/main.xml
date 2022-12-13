@@ -11,6 +11,11 @@
         android:label="Home"
         tools:layout="@layout/fragment_home" />
     <fragment
+        android:id="@+id/menuUpload"
+        android:name="com.example.videoservice.fragments.VideoUploadFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_video_upload" />
+    <fragment
         android:id="@+id/menuProfile"
         android:name="com.example.videoservice.fragments.ProfileFragment"
         android:label="Profile"

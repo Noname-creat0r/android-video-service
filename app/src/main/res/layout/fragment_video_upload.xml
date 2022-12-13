@@ -3,9 +3,4 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.HomeFragment"
-    android:background="@color/platinum">
-
-
-
-</FrameLayout>
+    tools:context=".fragments.VideoUploadFragment"/>

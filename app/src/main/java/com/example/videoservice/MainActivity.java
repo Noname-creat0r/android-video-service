@@ -6,7 +6,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -19,18 +18,19 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.videoservice.auth.Auth;
 import com.example.videoservice.auth.activities.LoginActivity;
 import com.example.videoservice.auth.activities.SignupActivity;
+import com.example.videoservice.slider.Slide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,9 +38,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String AUTH_STATUS = "AUTH_STATUS";
 
     public static FirebaseAuth mAuth;
-    private AlertDialog.Builder dialogBuilder;
-    private AlertDialog dialog;
-    private Button loginBtn, signupBtn;
+    public static FirebaseStorage storage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+        storage = FirebaseStorage.getInstance();
+
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.setItemIconTintList(null);
@@ -90,18 +90,26 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser != null){
             TextView profileName = findViewById(R.id.profileNameHeader);
             profileName.setText(mAuth.getCurrentUser().getEmail());
+
+
         }
     }
 
+    private ArrayList<Slide> getSlides() {
+        ArrayList<Slide> slides = new ArrayList<>();
+
+        return slides;
+    }
+
     private void createAuthDialog(){
-        dialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         final View authPopupView = getLayoutInflater().inflate(R.layout.auth_popup, null);
 
-        loginBtn = authPopupView.findViewById(R.id.login);
-        signupBtn = authPopupView.findViewById(R.id.signup);
+        Button loginBtn = authPopupView.findViewById(R.id.login);
+        Button signupBtn = authPopupView.findViewById(R.id.signup);
 
         dialogBuilder.setView(authPopupView);
-        dialog = dialogBuilder.create();
+        AlertDialog dialog = dialogBuilder.create();
         dialog.show();
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // Sign In/ Sign Up handler
     ActivityResultLauncher<Intent> mAuthHandler =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                     new ActivityResultCallback<ActivityResult>() {
