@@ -27,6 +27,8 @@ import com.example.videoservice.slider.Slide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
@@ -44,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance("https://android-vide-service-default-rtdb.europe-west1.firebasedatabase.app/");
+        DatabaseReference ref = db.getReference("message");
+        ref.push().setValue("Hell");
 
         mAuth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();

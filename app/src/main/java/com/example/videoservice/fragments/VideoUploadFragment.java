@@ -1,6 +1,7 @@
 package com.example.videoservice.fragments;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,9 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.MediaController;
@@ -26,17 +29,30 @@ import android.widget.VideoView;
 
 import com.example.videoservice.R;
 import com.example.videoservice.slider.Slide;
+import com.example.videoservice.video.Video;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 public class VideoUploadFragment extends Fragment {
 
     private static final String PICK_VIDEO = "PICK_VIDEO";
 
-    Button uploadButton;
-    ProgressBar progressBar;
-    TextView chooseVideoEditText;
     private Uri videoUri;
-    MediaController mediaController;
+    ProgressBar progressBar;
+
+    StorageReference storageRef;
+    DatabaseReference databaseRef;
+    UploadTask uploadTask;
 
     public VideoUploadFragment() {
     }
@@ -50,15 +66,27 @@ public class VideoUploadFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_video_upload, container, false);
-        uploadButton = view.findViewById(R.id.buttonUpload);
-        progressBar = view.findViewById(R.id.progressBar);
-        chooseVideoEditText = view.findViewById(R.id.textViewChooseVideo);
-        mediaController = new MediaController(view.getContext());
 
+        View view = inflater.inflate(R.layout.fragment_video_upload, container, false);
+
+        EditText videoTitle = view.findViewById(R.id.editTextVideoTitle);
+        EditText videoDescription = view.findViewById(R.id.editTextVideoDesc);
+        Button uploadButton = view.findViewById(R.id.buttonUpload);
+        progressBar = view.findViewById(R.id.progressBar);
+        TextView chooseVideoEditText = view.findViewById(R.id.textViewChooseVideo);
+
+        storageRef = FirebaseStorage.getInstance().getReference("videos");
+        databaseRef = FirebaseDatabase.getInstance().getReference("videos").push();
 
         chooseVideoEditText.setOnClickListener(v -> {
             chooseVideo(view);
+        });
+
+        uploadButton.setOnClickListener(v -> {
+            uploadVideo(videoTitle.getText().toString(),
+                    videoDescription.getText().toString(),
+                    videoUri,
+                    view);
         });
 
         return view;
@@ -74,7 +102,8 @@ public class VideoUploadFragment extends Fragment {
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
-                    Toast.makeText(getContext(), "Vide URI: " + data.toString(),
+                    videoUri = Uri.parse(data.getData().toString());
+                    Toast.makeText(getContext(), "Video URI: " + videoUri.toString(),
                             Toast.LENGTH_LONG).show();
 
                 }
@@ -86,5 +115,66 @@ public class VideoUploadFragment extends Fragment {
         intent.setType("video/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         handleUpload.launch(intent);
+    }
+
+    private String getExt(Uri uri, View view){
+        ContentResolver contentResolver = view.getContext().getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void uploadVideo(String title, String description, Uri uri, View view){
+        if (uri != null ||
+                !TextUtils.isEmpty(title) ||
+                !TextUtils.isEmpty(description)){
+            progressBar.setVisibility(View.VISIBLE);
+            final StorageReference ref = storageRef
+                    .child(System.currentTimeMillis() + "." + getExt(uri, view));
+            uploadTask = ref.putFile(uri);
+
+            Task<Uri> urlTask = uploadTask.continueWithTask(task -> {
+                if (!task.isSuccessful()){
+                    throw Objects.requireNonNull(task.getException());
+                }
+                return ref.getDownloadUrl();
+            })
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Uri downloadUrl = task.getResult();
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(view.getContext(), "Your video has been uploaded.",
+                                Toast.LENGTH_SHORT).show();
+
+                        Video video = new Video(title, downloadUrl.toString(), description);
+                        Toast.makeText(view.getContext(), "Vide title: "
+                                        + video.getName() + ", Video desc: " + video.getDescription(),
+                                Toast.LENGTH_LONG).show();
+
+                        HashMap<String, String> videoMap = new HashMap<>();
+                        videoMap.put("title", video.getName());
+                        videoMap.put("url", video.getUrl());
+                        videoMap.put("description", video.getDescription());
+
+                        databaseRef
+                                .child(videoMap.get("title"))
+                                .setValue(videoMap)
+                                .addOnCompleteListener(check -> {
+                            if (check.isSuccessful()){
+                                Toast.makeText(view.getContext(), "Success",
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(view.getContext(), "Faliure",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(view.getContext(), "Failed to upload your video.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+        } else {
+            Toast.makeText(view.getContext(), "Fill in all the fields first!",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }
