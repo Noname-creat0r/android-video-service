@@ -47,10 +47,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseDatabase db = FirebaseDatabase.getInstance("https://android-vide-service-default-rtdb.europe-west1.firebasedatabase.app/");
-        DatabaseReference ref = db.getReference("message");
-        ref.push().setValue("Hell");
-
         mAuth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
 

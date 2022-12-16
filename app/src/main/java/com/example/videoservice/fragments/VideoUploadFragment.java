@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -21,17 +19,12 @@ import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.example.videoservice.R;
-import com.example.videoservice.slider.Slide;
 import com.example.videoservice.video.Video;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -39,13 +32,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class VideoUploadFragment extends Fragment {
-
-    private static final String PICK_VIDEO = "PICK_VIDEO";
 
     private Uri videoUri;
     ProgressBar progressBar;
@@ -76,7 +65,9 @@ public class VideoUploadFragment extends Fragment {
         TextView chooseVideoEditText = view.findViewById(R.id.textViewChooseVideo);
 
         storageRef = FirebaseStorage.getInstance().getReference("videos");
-        databaseRef = FirebaseDatabase.getInstance().getReference("videos").push();
+        databaseRef = FirebaseDatabase
+                .getInstance("https://android-vide-service-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("videos");
 
         chooseVideoEditText.setOnClickListener(v -> {
             chooseVideo(view);
@@ -146,27 +137,7 @@ public class VideoUploadFragment extends Fragment {
                                 Toast.LENGTH_SHORT).show();
 
                         Video video = new Video(title, downloadUrl.toString(), description);
-                        Toast.makeText(view.getContext(), "Vide title: "
-                                        + video.getName() + ", Video desc: " + video.getDescription(),
-                                Toast.LENGTH_LONG).show();
-
-                        HashMap<String, String> videoMap = new HashMap<>();
-                        videoMap.put("title", video.getName());
-                        videoMap.put("url", video.getUrl());
-                        videoMap.put("description", video.getDescription());
-
-                        databaseRef
-                                .child(videoMap.get("title"))
-                                .setValue(videoMap)
-                                .addOnCompleteListener(check -> {
-                            if (check.isSuccessful()){
-                                Toast.makeText(view.getContext(), "Success",
-                                        Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(view.getContext(), "Faliure",
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        });
+                        databaseRef.push().setValue(video);
                     } else {
                         Toast.makeText(view.getContext(), "Failed to upload your video.",
                                 Toast.LENGTH_SHORT).show();

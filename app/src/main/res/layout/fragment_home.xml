@@ -7,5 +7,9 @@
     android:background="@color/platinum">
 
 
+    <include
+        layout="@layout/fragment_video_card_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </FrameLayout>
